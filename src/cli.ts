@@ -68,7 +68,7 @@ program
       console.log('🔬 Cost by Model:');
       const modelTable = Object.entries(analysis.costByModel || {})
         .map(([model, cost]) => [model, formatCurrency(cost || 0)])
-        .sort((a, b) => parseFloat(b[1].replace(/[^\d.-]/g, '') || '0') - parseFloat(a[1].replace(/[^\d.-]/g, '') || '0'));
+        .sort((a, b) => parseFloat((b[1] ?? '').replace(/[^\d.-]/g, '') || '0') - parseFloat((a[1] ?? '').replace(/[^\d.-]/g, '') || '0'));
       
       console.log(formatTable(['Model', 'Cost'], modelTable));
     }
@@ -78,7 +78,7 @@ program
       console.log('\n🔧 Cost by Operation:');
       const operationTable = Object.entries(analysis.costByOperation || {})
         .map(([operation, cost]) => [operation, formatCurrency(cost || 0)])
-        .sort((a, b) => parseFloat(b[1].replace(/[^\d.-]/g, '') || '0') - parseFloat(a[1].replace(/[^\d.-]/g, '') || '0'));
+        .sort((a, b) => parseFloat((b[1] ?? '').replace(/[^\d.-]/g, '') || '0') - parseFloat((a[1] ?? '').replace(/[^\d.-]/g, '') || '0'));
 
       console.log(formatTable(['Operation', 'Cost'], operationTable));
     }

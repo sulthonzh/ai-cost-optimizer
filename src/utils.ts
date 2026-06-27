@@ -1,17 +1,23 @@
+function stripTrailingZeros(s: string): string {
+  return s.replace(/\.?0+$/, '');
+}
+
 export function formatCurrency(amount: number, currency: string = 'USD'): string {
   if (amount === 0) return '$0.00';
   
+  const symbol = currency === 'EUR' ? '€' : '$';
+  const sign = amount < 0 ? '-' : '';
   const abs = Math.abs(amount);
   let formatted: string;
   
   if (abs >= 1000000) {
-    formatted = `$${(amount / 1000000).toFixed(2)}M`;
+    formatted = `${symbol}${sign}${stripTrailingZeros((abs / 1000000).toFixed(2))}M`;
   } else if (abs >= 1000) {
-    formatted = `$${(amount / 1000).toFixed(2)}K`;
+    formatted = `${symbol}${sign}${stripTrailingZeros((abs / 1000).toFixed(2))}K`;
   } else if (abs >= 1) {
-    formatted = `$${amount.toFixed(3)}`;
+    formatted = `${symbol}${sign}${stripTrailingZeros(abs.toFixed(3))}`;
   } else {
-    formatted = `$${amount.toFixed(6)}`;
+    formatted = `${symbol}${sign}${stripTrailingZeros(abs.toFixed(6))}`;
   }
   
   return formatted;
@@ -21,12 +27,13 @@ export function formatTokens(tokens: number): string {
   if (tokens === 0) return '0';
   
   const abs = Math.abs(tokens);
+  const sign = tokens < 0 ? '-' : '';
   let formatted: string;
   
   if (abs >= 1000000) {
-    formatted = `${(tokens / 1000000).toFixed(2)}M`;
+    formatted = `${sign}${stripTrailingZeros((abs / 1000000).toFixed(2))}M`;
   } else if (abs >= 1000) {
-    formatted = `${(tokens / 1000).toFixed(2)}K`;
+    formatted = `${sign}${stripTrailingZeros((abs / 1000).toFixed(2))}K`;
   } else {
     formatted = tokens.toLocaleString();
   }
@@ -45,7 +52,7 @@ export function formatTable(headers: string[], rows: string[][]): string {
 
   const formatRow = (row: string[]) => {
     return row.map((cell, index) => {
-      const width = columnWidths[index];
+      const width = columnWidths[index] ?? 0;
       return cell.padEnd(width);
     }).join('');
   };
@@ -55,7 +62,7 @@ export function formatTable(headers: string[], rows: string[][]): string {
   
   const dataRows = rows.map(formatRow);
   
-  return [headerRow, separator, ...dataRows].join('\\n');
+  return [headerRow, separator, ...dataRows].join('\n');
 }
 
 export function formatPercentage(value: number): string {
@@ -76,9 +83,18 @@ export function formatDuration(ms: number): string {
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
   
-  if (days > 0) return `${days}d ${hours % 24}h`;
-  if (hours > 0) return `${hours}h ${minutes % 60}m`;
-  if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+  if (days > 0) {
+    const remainingHours = hours % 24;
+    return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
+  }
+  if (hours > 0) {
+    const remainingMinutes = minutes % 60;
+    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+  }
+  if (minutes > 0) {
+    const remainingSeconds = seconds % 60;
+    return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+  }
   return `${seconds}s`;
 }
 
@@ -87,14 +103,14 @@ export function generateId(): string {
 }
 
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
 
 export function isValidUrl(url: string): boolean {
   try {
-    new URL(url);
-    return true;
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
   } catch {
     return false;
   }
@@ -150,5 +166,7 @@ export function roundToDecimal(num: number, decimal: number): number {
 }
 
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat('en-US').format(num);
+  return new Intl.NumberFormat('en-US', { 
+    maximumFractionDigits: 0 
+  }).format(Math.round(num));
 }

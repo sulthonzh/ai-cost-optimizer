@@ -62,8 +62,11 @@ describe('Utility Functions', () => {
       expect(utils.formatTokens(-1500)).toBe('-1.5K');
     });
 
-    it('should format large numbers with commas', () => {
-      expect(utils.formatTokens(1234567)).toBe('1,234,567');
+    it('should format large numbers with M suffix', () => {
+      // 1234567 is >= 1M so it uses the M suffix
+      expect(utils.formatTokens(1234567)).toBe('1.23M');
+      // Numbers below 1K use locale string with commas
+      expect(utils.formatTokens(999)).toBe('999');
     });
   });
 
@@ -207,7 +210,7 @@ describe('Utility Functions', () => {
     describe('formatNumber', () => {
       it('should format numbers with locale', () => {
         expect(utils.formatNumber(1000)).toBe('1,000');
-        expect(utils.formatNumber(1234567.89)).toBe('1,234,567');
+        expect(utils.formatNumber(1234567.89)).toBe('1,234,568');
         expect(utils.formatNumber(1234.5)).toBe('1,235');
       });
     });

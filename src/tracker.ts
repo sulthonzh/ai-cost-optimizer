@@ -33,7 +33,7 @@ export class CostTrackerManager {
     const updatedTracker = {
       ...tracker,
       ...updates,
-      updatedAt: Date.now(),
+      updatedAt: Math.max(Date.now(), tracker.createdAt + 1),
     };
     
     this.trackers.set(id, updatedTracker);
@@ -47,6 +47,7 @@ export class CostTrackerManager {
   trackUsage(usage: Omit<TokenUsage, 'timestamp'>): void {
     const trackedUsage: TokenUsage = {
       ...usage,
+      totalTokens: usage.totalTokens ?? (usage.inputTokens + usage.outputTokens),
       timestamp: Date.now(),
     };
     
@@ -65,7 +66,7 @@ export class CostTrackerManager {
     }
 
     if (since) {
-      filteredUsage = filteredUsage.filter(u => u.timestamp >= since);
+      filteredUsage = filteredUsage.filter(u => u.timestamp > since);
     }
 
     return filteredUsage;
@@ -83,13 +84,7 @@ export class CostTrackerManager {
     const outputTokens = usage.reduce((sum, u) => sum + u.outputTokens, 0);
     const totalTokens = inputTokens + outputTokens;
     
-    let cost = 0;
-    usage.forEach(u => {
-      const tracker = this.getTrackerForModel(u.model);
-      if (tracker) {
-        cost += (inputTokens * tracker.costPerInputToken) + (outputTokens * tracker.costPerOutputToken);
-      }
-    });
+    const cost = usage.reduce((sum, u) => sum + (u.cost || 0), 0);
 
     return { inputTokens, outputTokens, totalTokens, cost };
   }
@@ -113,10 +108,6 @@ export class CostTrackerManager {
     return Array.from(hourlyData.entries())
       .map(([hour, data]) => ({ hour, tokens: data.tokens, cost: data.cost }))
       .sort((a, b) => a.hour.localeCompare(b.hour));
-  }
-
-  private getTrackerForModel(model: string): CostTracker | undefined {
-    return Array.from(this.trackers.values()).find(t => t.model === model);
   }
 
   private generateId(): string {

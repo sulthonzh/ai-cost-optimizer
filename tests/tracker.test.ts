@@ -303,7 +303,7 @@ describe('CostTrackerManager', () => {
       expect(total.inputTokens).toBe(300);
       expect(total.outputTokens).toBe(150);
       expect(total.totalTokens).toBe(450);
-      expect(total.cost).toBe(0.0135);
+      expect(total.cost).toBeCloseTo(0.0135, 10);
     });
 
     it('should calculate totals with filters', () => {
@@ -350,7 +350,7 @@ describe('CostTrackerManager', () => {
       expect(history.length).toBeGreaterThan(0);
       
       const entry = history[0];
-      expect(entry.hour).toMatch(/\\d{4}-\\d{2}-\\d{2}T\\d{2}/);
+      expect(entry.hour).toMatch(/\d{4}-\d{2}-\d{2}T\d{2}/);
       expect(typeof entry.tokens).toBe('number');
       expect(typeof entry.cost).toBe('number');
     });

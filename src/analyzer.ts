@@ -1,4 +1,4 @@
-import { CostTrackerManager } from './tracker';
+import { CostTrackerManager, costTrackerManager } from './tracker';
 import { 
   CostAnalysis, 
   CostInefficiency, 
@@ -203,7 +203,7 @@ export class CostAnalyzer {
       .filter(u => u.inputTokens > 0 && u.outputTokens > 0)
       .map(u => {
         const outputRatio = u.outputTokens / u.inputTokens;
-        const severity = outputRatio > 3 ? 'high' : outputRatio > 2 ? 'medium' : 'low';
+        const severity: 'low' | 'medium' | 'high' | 'critical' = outputRatio > 3 ? 'high' : outputRatio > 2 ? 'medium' : 'low';
         const potentialSavings = u.cost ? u.cost * 0.1 : 0; // 10% potential savings
         
         return {
@@ -218,8 +218,8 @@ export class CostAnalyzer {
   }
 
   private generateRecommendations(
-    usage: TokenUsage[], 
-    trackers: CostTracker[], 
+    _usage: TokenUsage[], 
+    _trackers: CostTracker[], 
     inefficiencies: CostInefficiency[]
   ): CostRecommendation[] {
     const recommendations: CostRecommendation[] = [];
