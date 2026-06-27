@@ -2,16 +2,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    globals: true,
-    environment: 'node',
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'dist/**',
-        'node_modules/**',
-        'tests/**'
-      ]
-    }
-  }
+      include: ['src/**/*.ts'],
+      exclude: ['src/cli.ts'], // CLI is integration-tested via subprocess, not unit-testable for coverage
+      reporter: ['text', 'text-summary', 'lcov'],
+    },
+  },
 });

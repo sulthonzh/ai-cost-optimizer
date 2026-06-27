@@ -116,7 +116,7 @@ export function isValidUrl(url: string): boolean {
   }
 }
 
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -128,7 +128,7 @@ export function debounce<T extends (...args: any[]) => any>(
   };
 }
 
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -150,11 +150,12 @@ export function deepClone<T>(obj: T): T {
   if (obj instanceof Array) return obj.map(item => deepClone(item)) as T;
   
   if (typeof obj === 'object') {
-    const cloned = {} as T;
-    Object.keys(obj).forEach(key => {
-      cloned[key as keyof T] = deepClone((obj as any)[key]);
+    const cloned = {} as Record<string, unknown>;
+    const record = obj as Record<string, unknown>;
+    Object.keys(record).forEach(key => {
+      cloned[key] = deepClone(record[key]);
     });
-    return cloned;
+    return cloned as T;
   }
   
   return obj;
