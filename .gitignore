@@ -113,3 +113,8 @@ Thumbs.db
 *.log
 tmp/
 temp/
+# Python
+__pycache__/
+.venv/
+*.egg-info/
+.mypy_cache/
