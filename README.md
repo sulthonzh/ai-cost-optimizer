@@ -2,7 +2,7 @@
 
 Stop bleeding money on AI APIs. Track every token, spot inefficiencies, and cut your LLM bill by up to 30%.
 
-**Zero-dependency CLI tool** for monitoring and optimizing AI operational costs — real-time token tracking, cost analysis, and actionable recommendations.
+**Single-dependency CLI tool** for monitoring and optimizing AI operational costs — real-time token tracking, cost analysis, and actionable recommendations.
 
 ## Why
 
@@ -72,7 +72,7 @@ ai-cost-optimizer analyze  # See side-by-side cost comparison
 | Feature | ai-cost-optimizer | Helicone | Langfuse | Custom scripts |
 |---|---|---|---|---|
 | Setup time | 30 seconds | Dashboard signup | Self-hosted | Hours |
-| Dependencies | Zero (CLI) | Proxy server | PostgreSQL | Whatever you wrote |
+| Dependencies | One (commander) | Proxy server | PostgreSQL | Whatever you wrote |
 | Cost | Free | Free tier → $$ | Free tier → $$ | Free |
 | Recommendations | ✅ Automated | ❌ Manual | ❌ Manual | ❌ None |
 | Offline/Private | ✅ | ❌ Cloud | ✅ Self-host | ✅ |
@@ -103,8 +103,8 @@ Create `.ai-cost-optimizer.json` in your project:
 git clone https://github.com/sulthonzh/ai-cost-optimizer.git
 cd ai-cost-optimizer
 npm install
-npm test          # 76 tests
-npm run test:coverage  # 99.57% statements
+npm test          # 76 tests, 100% pass rate
+npm run test:coverage  # 99.57% statements, 88.74% branches
 npm run build     # ESM + CJS
 ```
 
