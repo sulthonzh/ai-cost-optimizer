@@ -58,6 +58,6 @@
     "url": "https://github.com/sulthonzh/ai-cost-optimizer/issues"
   },
   "overrides": {
-    "esbuild": "0.28.1"
+    "esbuild": "0.28.2"
   }
 }
